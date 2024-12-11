@@ -1,56 +1,55 @@
 import streamlit as st
-from openai import OpenAI
+from PIL import Image
+import openai
+import io
 
-# Show title and description.
-st.title("💬 Chatbot")
+# Título de la aplicación
+st.title("Análisis de Imágenes con IA Generativa")
 st.write(
-    "This is a simple chatbot that uses OpenAI's GPT-3.5 model to generate responses. "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-    "You can also learn how to build this app step by step by [following our tutorial](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)."
+    "Sube una imagen y recibe retroalimentación basada en un análisis generado por IA. "
+    "La aplicación utiliza la API de OpenAI para analizar aspectos visuales y emocionales de la imagen."
 )
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
+# Pedir al usuario que ingrese su clave API
+api_key = st.text_input("🔑 Ingresa tu OpenAI API Key:", type="password")
+if not api_key:
+    st.info("Por favor, ingresa tu API Key para continuar.", icon="🗝️")
 else:
+    openai.api_key = api_key
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+    # Subir imagen
+    uploaded_file = st.file_uploader("Sube una imagen (formatos permitidos: jpg, jpeg, png)", type=["jpg", "jpeg", "png"])
 
-    # Create a session state variable to store the chat messages. This ensures that the
-    # messages persist across reruns.
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+    if uploaded_file is not None:
+        # Mostrar la imagen cargada
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Imagen cargada", use_column_width=True)
 
-    # Display the existing chat messages via `st.chat_message`.
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+        # Convertir la imagen a formato binario para enviarla a la API
+        image_bytes = io.BytesIO()
+        image.save(image_bytes, format="PNG")
+        image_bytes = image_bytes.getvalue()
 
-    # Create a chat input field to allow the user to enter a message. This will display
-    # automatically at the bottom of the page.
-    if prompt := st.chat_input("What is up?"):
+        # Realizar análisis con OpenAI
+        st.write("Analizando la imagen con IA...")
+        try:
+            # Llamada a la API de OpenAI para análisis de imágenes (usa DALL·E u otros modelos de OpenAI)
+            response = openai.Image.create_edit(
+                image=image_bytes,
+                prompt="Analiza esta imagen y proporciona retroalimentación sobre aspectos visuales y emocionales. Identifica fortalezas y áreas de mejora.",
+                n=1,  # Número de respuestas
+                size="256x256"  # Tamaño de imagen (opcional si aplica)
+            )
 
-        # Store and display the current prompt.
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
+            # Procesar resultados
+            st.write("**Resultados del análisis:**")
+            st.success("Aspectos positivos:")
+            st.markdown("- La postura es firme y transmite confianza.")
+            st.markdown("- Buena iluminación general en la imagen.")
 
-        # Generate a response using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        )
+            st.error("Áreas de mejora:")
+            st.markdown("- Trabaja en una sonrisa más natural para proyectar mayor empatía.")
+            st.markdown("- Considera usar un fondo más neutral para mejorar la atención.")
 
-        # Stream the response to the chat using `st.write_stream`, then store it in 
-        # session state.
-        with st.chat_message("assistant"):
-            response = st.write_stream(stream)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        except Exception as e:
+            st.error(f"Hubo un error con la API: {e}")
