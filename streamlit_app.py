@@ -22,8 +22,7 @@ if api_key:
             # Mostrar la imagen cargada desde el enlace
             st.image(image_url, caption="Imagen cargada desde el enlace", use_column_width=True)
 
-            # Configurar el cuerpo de la solicitud
-            # Configurar el cuerpo de la solicitud
+
         data = {
             "model": "llama-3.2-90b-vision-preview",  # Modelo multimodal de GroqCloud
             "messages": [
@@ -33,13 +32,10 @@ if api_key:
                         {
                             "type": "text",
                             "text": (
-                                "Esta es una imagen de una persona. Por favor, analiza la imagen para "
-                                "brindar retroalimentación detallada sobre la postura, expresión facial, "
-                                "y cualquier elemento observable relacionado con interacciones sociales. "
-                                "Proporciona un análisis lo más completo posible."
-                                "\n\nAdicionalmente, da sugerencias específicas y detalladas sobre cómo "
-                                "la persona puede mejorar en aspectos sociales, como contacto visual, "
-                                "postura, o expresiones amigables, si corresponde."
+                                "Imagina que estás hablando directamente con la persona que aparece en esta imagen. "
+                                "Analiza su postura, expresión facial, y estilo, y proporciona consejos prácticos sobre cómo mejorar su presencia "
+                                "y confianza en interacciones sociales. "
+                                "\n\nPor favor, sé amable y directo en tus recomendaciones, como si estuvieras conversando con un amigo."
                             )
                         },
                         {
@@ -53,6 +49,7 @@ if api_key:
             "max_tokens": 1024,
             "top_p": 1
         }
+
 
 
             # Enviar solicitud a la API
