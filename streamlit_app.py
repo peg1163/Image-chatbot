@@ -3,7 +3,7 @@ from PIL import Image
 import openai
 import io
 
-# Configurar la clave de API
+# Configurar la API Key de OpenAI
 st.title("Análisis de Imágenes con GPT-4 Vision")
 api_key = st.text_input("🔑 Ingresa tu OpenAI API Key:", type="password")
 
@@ -41,4 +41,7 @@ if api_key:
             st.write(analysis)
 
         except openai.error.OpenAIError as e:
-            st.error(f"Hubo un error con la API: {e}")
+            st.error(f"Error en la API de OpenAI: {e}")
+
+        except Exception as e:
+            st.error(f"Error inesperado: {e}")
