@@ -62,7 +62,16 @@ if api_key:
             # Manejar la respuesta
             if response.status_code == 200:
                 result = response.json()
-                comentario = result["
+                comentario = result["choices"][0]["message"]["content"]
+                st.write("**Comentario generado por IA:**")
+                st.success(comentario)
+            else:
+                st.error(f"Error {response.status_code}: {response.text}")
 
+        except Exception as e:
+            st.error(f"Ocurrió un error al analizar la imagen: {e}")
+
+else:
+    st.info("Por favor, ingresa tu API Key para continuar.")
 
 
