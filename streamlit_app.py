@@ -23,21 +23,37 @@ if api_key:
             st.image(image_url, caption="Imagen cargada desde el enlace", use_column_width=True)
 
             # Configurar el cuerpo de la solicitud
-            data = {
-                "model": "llama-3.2-90b-vision-preview",  # Asegúrate de que este modelo esté disponible
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": "Por favor analiza esta imagen y proporciona un comentario detallado."},
-                            {"type": "image_url", "image_url": {"url": image_url}}
-                        ]
-                    }
-                ],
-                "temperature": 1,
-                "max_tokens": 1024,
-                "top_p": 1
-            }
+            # Configurar el cuerpo de la solicitud
+        data = {
+            "model": "llama-3.2-90b-vision-preview",  # Modelo multimodal de GroqCloud
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": (
+                                "Esta es una imagen de una persona. Por favor, analiza la imagen para "
+                                "brindar retroalimentación detallada sobre la postura, expresión facial, "
+                                "y cualquier elemento observable relacionado con interacciones sociales. "
+                                "Proporciona un análisis lo más completo posible."
+                                "\n\nAdicionalmente, da sugerencias específicas y detalladas sobre cómo "
+                                "la persona puede mejorar en aspectos sociales, como contacto visual, "
+                                "postura, o expresiones amigables, si corresponde."
+                            )
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": image_url}  # Variable con el enlace de la imagen
+                        }
+                    ]
+                }
+            ],
+            "temperature": 1,
+            "max_tokens": 1024,
+            "top_p": 1
+        }
+
 
             # Enviar solicitud a la API
             st.write("Analizando la imagen...")
