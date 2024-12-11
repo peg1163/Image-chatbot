@@ -3,7 +3,7 @@ from PIL import Image
 import openai
 import io
 
-# Configurar la API Key de OpenAI
+# Configurar la clave de API
 st.title("Análisis de Imágenes con GPT-4 Vision")
 api_key = st.text_input("🔑 Ingresa tu OpenAI API Key:", type="password")
 
@@ -18,7 +18,7 @@ if api_key:
         image = Image.open(uploaded_file)
         st.image(image, caption="Imagen cargada", use_column_width=True)
 
-        # Convertir imagen a formato binario
+        # Convertir imagen a bytes para enviarla a la API
         image_bytes = io.BytesIO()
         image.save(image_bytes, format="PNG")
         image_bytes = image_bytes.getvalue()
@@ -27,18 +27,18 @@ if api_key:
         st.write("Analizando la imagen con GPT-4 Vision...")
         try:
             response = openai.ChatCompletion.create(
-                model="gpt-4-vision",
+                model="gpt-4",
                 messages=[
-                    {"role": "system", "content": "Eres un asistente que analiza imágenes y proporciona retroalimentación."},
-                    {"role": "user", "content": "Por favor analiza esta imagen y proporciona comentarios."}
+                    {"role": "system", "content": "Eres un asistente que analiza imágenes y proporciona retroalimentación detallada."},
+                    {"role": "user", "content": "Por favor analiza esta imagen y brinda comentarios."}
                 ],
                 files={"image": image_bytes}
             )
 
             # Mostrar resultados
-            analysis = response["choices"][0]["message"]["content"]
+            analysis = response.choices[0].message.content
             st.write("**Resultados del análisis:**")
             st.write(analysis)
 
-        except Exception as e:
+        except openai.error.OpenAIError as e:
             st.error(f"Hubo un error con la API: {e}")
