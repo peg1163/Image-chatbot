@@ -26,21 +26,21 @@ if api_key:
         # Enviar imagen a GPT-4 Vision
         st.write("Analizando la imagen con GPT-4 Vision...")
         try:
+            # Llamada al modelo GPT-4 (asegúrate de que tu cuenta tenga acceso)
             response = openai.ChatCompletion.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": "Eres un asistente que analiza imágenes y proporciona retroalimentación detallada."},
-                    {"role": "user", "content": "Por favor analiza esta imagen y brinda comentarios."}
-                ],
-                files={"image": image_bytes}
+                    {"role": "user", "content": "Por favor analiza esta imagen y proporciona comentarios."}
+                ]
             )
 
-            # Mostrar resultados
-            analysis = response.choices[0].message.content
+            # Procesar y mostrar los resultados
+            analysis = response['choices'][0]['message']['content']
             st.write("**Resultados del análisis:**")
             st.write(analysis)
 
-        except openai.error.OpenAIError as e:
+        except openai.OpenAIError as e:
             st.error(f"Error en la API de OpenAI: {e}")
 
         except Exception as e:
