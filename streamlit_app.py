@@ -22,33 +22,33 @@ if api_key:
             # Mostrar la imagen cargada desde el enlace
             st.image(image_url, caption="Imagen cargada desde el enlace", use_column_width=True)
 
-
-        data = {
-            "model": "llama-3.2-90b-vision-preview",  # Modelo multimodal de GroqCloud
-            "messages": [
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": (
-                                "Imagina que estás hablando directamente con la persona que aparece en esta imagen. "
-                                "Analiza su postura, expresión facial, y estilo, y proporciona consejos prácticos sobre cómo mejorar su presencia "
-                                "y confianza en interacciones sociales. "
-                                "\n\nPor favor, sé amable y directo en tus recomendaciones, como si estuvieras conversando con un amigo."
-                            )
-                        },
-                        {
-                            "type": "image_url",
-                            "image_url": {"url": image_url}  # Variable con el enlace de la imagen
-                        }
-                    ]
-                }
-            ],
-            "temperature": 1,
-            "max_tokens": 1024,
-            "top_p": 1
-        }
+    
+            data = {
+                "model": "llama-3.2-90b-vision-preview",  # Modelo multimodal de GroqCloud
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": (
+                                    "Imagina que estás hablando directamente con la persona que aparece en esta imagen. "
+                                    "Analiza su postura, expresión facial, y estilo, y proporciona consejos prácticos sobre cómo mejorar su presencia "
+                                    "y confianza en interacciones sociales. "
+                                    "\n\nPor favor, sé amable y directo en tus recomendaciones, como si estuvieras conversando con un amigo."
+                                )
+                            },
+                            {
+                                "type": "image_url",
+                                "image_url": {"url": image_url}  # Variable con el enlace de la imagen
+                            }
+                        ]
+                    }
+                ],
+                "temperature": 1,
+                "max_tokens": 1024,
+                "top_p": 1
+            }
 
 
 
